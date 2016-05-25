@@ -6,7 +6,7 @@
     <script src="../base1/cockpit.js"></script>
     <script src="../base1/jquery.js"></script>
     <script src="../base1/mustache.js"></script>
-    <script src="../base1/moment.js"></script>
+    <script src="../timer/moment.js"></script>
     <link rel="stylesheet" type="text/css" href="../base1/patternfly.css">
     <link rel="stylesheet" type="text/css" href="../base1/patternfly-additions.css">
 </head>
@@ -118,9 +118,6 @@
                   <li value="0"><a>Don't Repeat</a></li>
                   <li value="1"><a>Repeat Hourly</a></li>
                   <li value="2"><a>Repeat Daily</a></li>
-                  <li value="3"><a>Repeat Weekly</a></li>
-                  <li value="4"><a>Repeat Monthly</a></li>
-                  <li value="5"><a>Repeat Yearly</a></li>
                 </ul>
               </div>
             </div>
@@ -500,7 +497,7 @@ operation = function (systemd_manager) {
     }
     setTimeout(function() {
       fill_table($('#target'), "Timers", units);
-    }, 700);  
+    }, 5800);  
   };
 
   function add_timings(key) {
@@ -533,12 +530,12 @@ operation = function (systemd_manager) {
     function(result){  
       $.when(s(result)).then(
           function(){
-            setTimeout(render, 500);
+            setTimeout(render, 300);
           }
     )});
 };
-//var moment = require('moment');
-console.log(moment().format());
+// var moment = require('moment');
+// console.log(moment().format());
 
 var systemd_client = cockpit.dbus("org.freedesktop.systemd1", { superuser: "try" });
 var systemd_manager = systemd_client.proxy("org.freedesktop.systemd1.Manager","/org/freedesktop/systemd1");
