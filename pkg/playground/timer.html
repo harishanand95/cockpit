@@ -6,7 +6,7 @@
     <script src="../base1/cockpit.js"></script>
     <script src="../base1/jquery.js"></script>
     <script src="../base1/mustache.js"></script>
-    <script src="moment.js"></script>
+    <script src="../playground/moment.js"></script>
     <link rel="stylesheet" type="text/css" href="../base1/patternfly.css">
     <link rel="stylesheet" type="text/css" href="../base1/patternfly-additions.css">
 </head>
@@ -118,6 +118,7 @@
                   <li value="0"><a>Don't Repeat</a></li>
                   <li value="1"><a>Repeat Hourly</a></li>
                   <li value="2"><a>Repeat Daily</a></li>
+                  <li value="3"><a>Repeat Weekly</a></li>
                 </ul>
               </div>
             </div>
@@ -141,10 +142,25 @@
             </div>
           </div>
           <div class="form-group" id="specific_time_for_repeat_daily0">
+            <label class="col-sm-3 control-label" >Hour : Minute</label>
+            <div class="col-sm-9" >
+              <div class="col-sm-2">
+                <input type="text" id="repeat_daily_hr" data-toggle="tooltip" data-placement="bottom" title="hours" value="00" class="form-control" >
+              </div>
+              <div class="col-sm-1">:</div>
+              <div class="col-sm-2 ">
+                <input type="text" id="repeat_daily_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
+              </div>
+              <div class="col-sm-2 ">
+                <button class="btn btn-default dropdown-toggle pficon-close " type="button" disabled></button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" id="specific_time_for_repeat_weekly0">
             <label class="col-sm-3 control-label" >Day : Hour : Minute</label>
             <div class="col-sm-9" >
               <div class="col-sm-4">
-                <div class="btn-group bootstrap-select dropdown form-control " id="repeat_daily_day">
+                <div class="btn-group bootstrap-select dropdown form-control " id="repeat_weekly_day">
                   <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                     <span class="pull-left" translatable="yes">Monday</span>
                     <span class="caret"></span>
@@ -161,11 +177,11 @@
                 </div>
               </div>
               <div class="col-sm-2">
-                <input type="text" id="repeat_daily_hr" data-toggle="tooltip" data-placement="bottom" title="hours" value="00" class="form-control" >
+                <input type="text" id="repeat_weekly_hr" data-toggle="tooltip" data-placement="bottom" title="hours" value="00" class="form-control" >
               </div>
               <div class="col-sm-1">:</div>
               <div class="col-sm-2 ">
-                <input type="text" id="repeat_daily_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
+                <input type="text" id="repeat_weekly_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
               </div>
               <div class="col-sm-2 ">
                 <button class="btn btn-default dropdown-toggle pficon-close " type="button" disabled></button>
@@ -184,14 +200,18 @@
 
 <script type="text/javascript">
 var repeat_hourly_count = 0;
-var repeat_daily_count = 0;    
+var repeat_daily_count = 0;
+var repeat_weekly_count = 0;    
+var repeat_hourly = $("#specific_time_for_repeat_hourly0");
+var repeat_daily = $("#specific_time_for_repeat_daily0");
+var repeat_weekly = $("#specific_time_for_repeat_weekly0");
+
 $("[id^=specific_time_for_repeat_hourly]").hide();
 $("[id^=specific_time_for_repeat_daily]").hide();
+$("[id^=specific_time_for_repeat_weekly]").hide();
 $("#repeat").hide();
 $("#add_button").hide();
 $("#close_button").hide();
-var repeat_hourly = $("#specific_time_for_repeat_hourly0");
-var repeat_daily = $("#specific_time_for_repeat_daily0");
 
 $("#add_button").on("click", function() {
   if ( timer_unit.repeat == "Repeat Hourly" ) {
@@ -212,10 +232,23 @@ $("#add_button").on("click", function() {
     var id_name = "specific_time_for_repeat_daily"+repeat_daily_count;
     var id_name_hr = "repeat_daily_hr"+repeat_daily_count;
     var id_name_min = "repeat_daily_min"+repeat_daily_count;
-    var id_name_day = "repeat_daily_day"+repeat_daily_count;
     $self.prop('id',id_name);
     $("#repeat_daily_hr",$self).prop('id',id_name_hr);
     $("#repeat_daily_min",$self).prop('id',id_name_min);
+    $("#repeat").after($self);
+    $(".btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
+  }
+  else if ( timer_unit.repeat == "Repeat Weekly" ) {
+    repeat_weekly_count++;
+    $self = repeat_weekly.clone();
+    var id_name = "specific_time_for_repeat_weekly"+repeat_weekly_count;
+    var id_name_hr = "repeat_weekly_hr"+repeat_weekly_count;
+    var id_name_min = "repeat_weekly_min"+repeat_weekly_count;
+    var id_name_day = "repeat_weekly_day"+repeat_weekly_count;
+    $self.prop('id',id_name);
+    $("#repeat_weekly_day",$self).prop('id',id_name_day);
+    $("#repeat_weekly_hr",$self).prop('id',id_name_hr);
+    $("#repeat_weekly_min",$self).prop('id',id_name_min);
     $("#repeat").after($self);
     $(".btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
   }
@@ -234,6 +267,12 @@ $(".form-horizontal").on( "click",".btn.btn-default.dropdown-toggle.pficon-close
     repeat_daily_count--;
     $(this).parents().eq(2).remove();
   }
+  else if( timer_unit.repeat == "Repeat Weekly" ) {
+    if (repeat_weekly_count <=1)
+      $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
+    repeat_weekly_count--;
+    $(this).parents().eq(2).remove();
+  }
 });
 
 $("#save-button").on("click", function() {
@@ -243,7 +282,7 @@ $("#save-button").on("click", function() {
 $(".form-horizontal ").on("click", "[value]",".btn-group.bootstrap-select.dropdown.form-control", function(ev) {
     var target = $(this).closest(".btn-group.bootstrap-select.dropdown.form-control");
     $("span", target).first().text(ev.target.text);
-    console.log(ev.currentTarget.value);
+
     switch(target.attr('id')) {
       case "boot_specific" : set_calendar_or_boot(Number(ev.currentTarget.value));
       break;
@@ -255,40 +294,58 @@ $(".form-horizontal ").on("click", "[value]",".btn-group.bootstrap-select.dropdo
 });
 
 function toggle_on_repeat(val) {
+  while( repeat_hourly_count && repeat_weekly_count && repeat_daily_count ) {
+    $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").trigger('click');
+  }
   switch(val) {
-    case 0 : $("[id^=specific_time_for_repeat_daily]").hide();
+    case 0 : 
       $("[id^=specific_time_for_repeat_hourly]").hide();
+      $("[id^=specific_time_for_repeat_daily]").hide();
+      $("[id^=specific_time_for_repeat_weekly]").hide();
       $("#add_button").hide();
       $("#close_button").hide();
       timer_unit.repeat = "Don't Repeat";
       break;
 
-    case 1 : $("[id^=specific_time_for_repeat_hourly]").show();
-      while( repeat_daily_count ) {
-        $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").trigger('click');
-      }
+    case 1 : 
+      $("[id^=specific_time_for_repeat_hourly]").show();
+      $("[id^=specific_time_for_repeat_daily]").hide(); 
+      $("[id^=specific_time_for_repeat_weekly]").hide();
+      $("#add_button").show();
+      $("#close_button").show();
+
       if ( repeat_hourly_count >= 1)
         $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
       else
         $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
-      $("#add_button").show();
-      $("#close_button").show();
-      $("[id^=specific_time_for_repeat_daily]").hide();
       timer_unit.repeat = "Repeat Hourly";
       break;
 
-    case 2 : $("[id^=specific_time_for_repeat_daily]").show();
-      while( repeat_hourly_count ) {
-        $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").trigger('click');
-      }
-      if ( repeat_daily_count >= 1)
+    case 2 : 
+      $("[id^=specific_time_for_repeat_hourly]").hide(); 
+      $("[id^=specific_time_for_repeat_daily]").show();
+      $("[id^=specific_time_for_repeat_weekly]").hide();
+      $("#add_button").show();
+      $("#close_button").show();
+
+      if ( repeat_daily_count >= 1 )
         $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
       else
         $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
+      timer_unit.repeat = "Repeat Daily";
+      break;
+
+    case 3 : 
+      $("[id^=specific_time_for_repeat_hourly]").hide(); 
+      $("[id^=specific_time_for_repeat_daily]").hide();
+      $("[id^=specific_time_for_repeat_weekly]").show();
       $("#add_button").show();
       $("#close_button").show();
-      $("[id^=specific_time_for_repeat_hourly]").hide();
-      timer_unit.repeat = "Repeat Daily";
+      if ( repeat_weekly_count >= 1)
+        $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
+      else
+        $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
+      timer_unit.repeat = "Repeat Weekly";
       break;
   };
 }
@@ -296,9 +353,10 @@ function toggle_on_repeat(val) {
 var set_calendar_or_boot = function(value) {
   if (value == 1) {
     $("#boot").show();
+    $("#repeat").hide();
     $("[id^=specific_time_for_repeat_hourly]").hide();
     $("[id^=specific_time_for_repeat_daily]").hide();
-    $("#repeat").hide();
+    $("[id^=specific_time_for_repeat_weekly]").hide();
     timer_unit.Calendar_or_Boot = "Boot";
   }
   else if (value == 2) {
@@ -326,13 +384,14 @@ var set_time_unit = function(value) {
   }
 }
 
-var timer_unit = { 
+var timer_unit = {
   Calendar_or_Boot : "Boot",
   time_unit :"sec",
   repeat : "Don't Repeat"
 };
 
 function create_timer() {
+
   var str = $("#textInput-modal-markup").val().replace(/\s/g, '')
   if ( !!str && ( str.length > 0 )) {
     timer_unit.name = str;
@@ -366,67 +425,93 @@ function create_timer() {
     timer_unit.boot_time = str;
     str = null;
   }
+
   var array = [];
   if (timer_unit.repeat == "Repeat Hourly") {
     $('input[id^="repeat_hourly_min"]').each( function() {
       array.push($(this).val());
     });
     timer_unit.repeat_minute = array.toString();
-    timer_unit.repeat_hour = 00;
-    timer_unit.repeat_days = null;
-    timer_unit.OnCalendar = "*-*-* *:"+timer_unit.repeat_minute+":00";
+
+    timer_unit.repeat_hour = "*";
+    timer_unit.repeat_days = "";
+    timer_unit.OnCalendar = timer_unit.repeat_days + "*-*-* "+timer_unit.repeat_hour+":"+timer_unit.repeat_minute+":00";
+  
   }
   else if(timer_unit.repeat == "Repeat Daily") {
     $('input[id^="repeat_daily_min"]').each( function() {
       array.push($(this).val());
     });
-  timer_unit.repeat_minute = array.toString();
-  array = [];
-  $('input[id^="repeat_daily_hr"]').each( function() {
-    array.push($(this).val());
-  });
-  timer_unit.repeat_hour = array.toString();
-  array = [];
-  $('div[id^="repeat_daily_day"]').each( function() {
-    array.push($("span", $(this)).first().text().slice(0,3));
-  });
-  timer_unit.repeat_days = array.toString();
-  timer_unit.OnCalendar = timer_unit.repeat_days + "*-*-* "+timer_unit.repeat_hour+":"+timer_unit.repeat_minute+":00";
+    timer_unit.repeat_minute = array.toString();
+
+    array = [];
+    $('input[id^="repeat_daily_hr"]').each( function() {
+      array.push($(this).val());
+    });
+    timer_unit.repeat_hour = array.toString();
+
+    timer_unit.repeat_days = "";
+    timer_unit.OnCalendar = timer_unit.repeat_days + "*-*-* "+timer_unit.repeat_hour+":"+timer_unit.repeat_minute+":00";
+  }
+  else if(timer_unit.repeat == "Repeat Weekly") {
+    $('input[id^="repeat_weekly_min"]').each( function() {
+      array.push($(this).val());
+    });
+    timer_unit.repeat_minute = array.toString();
+
+    array = [];
+    $('input[id^="repeat_weekly_hr"]').each( function() {
+      array.push($(this).val());
+    });
+    timer_unit.repeat_hour = array.toString();
+
+    array = [];
+    $('div[id^="repeat_weekly_day"]').each( function() {
+      array.push($("span", $(this)).first().text().slice(0,3));
+    });
+    timer_unit.repeat_days = array.toString();
+
+    timer_unit.OnCalendar = timer_unit.repeat_days + "*-*-* "+timer_unit.repeat_hour+":"+timer_unit.repeat_minute+":00";
   }
   console.log(timer_unit);
   create_timer_file();
-  
 }
 
 
 function create_timer_file() {
+  if ( timer_unit.repeat ==  "Don't Repeat" && timer_unit.Calendar_or_Boot == "Calendar") {
+    console.log("Error case : no time value specified");
+    return ;
+  }
 
-var service_path = "/etc/systemd/system/"+timer_unit.name+".service";
-var timer_path = "/etc/systemd/system/"+timer_unit.name+".timer";
-file = cockpit.file(service_path,{superuser:'try'});
-var unit="[Unit]\nDescription=";
-var service="\n[Service]\nType=oneshot\nExecStart=";
-var timer="\n[Timer]\n";
-var service_file = unit+timer_unit.Description+service+timer_unit.Command; 
-var timer_file ="";
-if(timer_unit.Calendar_or_Boot == "Boot" ) {
-  boottimer = timer +"OnBootSec=" +timer_unit.boot_time + timer_unit.time_unit;
-  timer_file=unit+timer_unit.Description+boottimer; 
-}
-else if (timer_unit.Calendar_or_Boot == "Calendar"){
-  calendartimer = timer + "OnCalendar=" + timer_unit.OnCalendar;
-  timer_file=unit+timer_unit.Description+calendartimer; 
-}
-file.replace(service_file).
-fail(function(error) {
-  console.log(error);
-});
+  var unit="[Unit]\nDescription=";
+  var service="\n[Service]\nType=oneshot\nExecStart=";
+  var timer="\n[Timer]\n";
+  var service_file = unit+timer_unit.Description+service+timer_unit.Command; 
+  var timer_file ="";
+  if(timer_unit.Calendar_or_Boot == "Boot" ) {
+    boottimer = timer +"OnBootSec=" +timer_unit.boot_time + timer_unit.time_unit;
+    timer_file=unit+timer_unit.Description+boottimer; 
+  }
+  else if (timer_unit.Calendar_or_Boot == "Calendar") {
+    calendartimer = timer + "OnCalendar=" + timer_unit.OnCalendar;
+    timer_file=unit+timer_unit.Description+calendartimer; 
+  }
 
-file = cockpit.file(timer_path,{superuser:'try'});
-file.replace(timer_file).
-fail(function(error){
-  console.log(error);});
-
+  var service_path = "/etc/systemd/system/"+timer_unit.name+".service";
+  file = cockpit.file(service_path,{superuser:'try'});
+  file.replace(service_file).
+  fail(function(error) {
+    console.log(error);
+  });
+  console.log("#Service file#\n"+service_file);
+  var timer_path = "/etc/systemd/system/"+timer_unit.name+".timer";
+  file = cockpit.file(timer_path,{superuser:'try'});
+  file.replace(timer_file).
+  fail(function(error) {
+    console.log(error);
+  });
+  console.log("#Timer file#\n"+timer_file);
 }
 
 function display_error(location,content) {
@@ -534,8 +619,6 @@ operation = function (systemd_manager) {
           }
     )});
 };
-// var moment = require('moment');
-// console.log(moment().format());
 
 var systemd_client = cockpit.dbus("org.freedesktop.systemd1", { superuser: "try" });
 var systemd_manager = systemd_client.proxy("org.freedesktop.systemd1.Manager","/org/freedesktop/systemd1");

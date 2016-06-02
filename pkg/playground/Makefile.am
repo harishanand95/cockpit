@@ -11,6 +11,7 @@ playground_DATA = \
 	pkg/playground/speed.min.html \
 	pkg/playground/metrics.html \
 	pkg/playground/metrics.min.html \
+	pkg/playground/moment.js \
 	pkg/playground/patterns.js \
 	pkg/playground/jquery-patterns.html \
 	pkg/playground/jquery-patterns.js \
@@ -21,6 +22,7 @@ playground_DATA = \
 	pkg/playground/service.html \
 	pkg/playground/service.min.html \
 	pkg/playground/service.js \
+	pkg/playground/timer.html \
 	pkg/playground/plot.html \
 	pkg/playground/plot.min.html \
 	pkg/playground/manifest.json \
@@ -64,6 +66,7 @@ CLEANFILES += \
 	pkg/playground/cockpit-components-listing.js \
 	pkg/playground/cockpit-components-select.js \
 	pkg/playground/cockpit-components-dialog.js \
+	pkg/playground/timer.min.html \
 	$(NULL)
 
 EXTRA_DIST += \
