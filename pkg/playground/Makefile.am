@@ -23,6 +23,7 @@ playground_DATA = \
 	pkg/playground/service.min.html \
 	pkg/playground/service.js \
 	pkg/playground/timer.html \
+	pkg/playground/timer.js \
 	pkg/playground/plot.html \
 	pkg/playground/plot.min.html \
 	pkg/playground/manifest.json \
@@ -39,12 +40,15 @@ playground_NOINST = \
 	pkg/playground/react-demo-dialog.min.js \
 	pkg/playground/react-demo-listing.min.js \
 	pkg/playground/service.min.js \
+	pkg/playground/timer.min.js \
 	$(NULL)
 
 # Ugliness to be solved by webpack in the future
 pkg/playground/react.min.js: pkg/playground/react.js
 	$(MIN_JS_RULE)
 
+pkg/playground/timer.min.js: pkg/playground/timer.js
+	$(MIN_JS_RULE)
 noinst_DATA += $(playground_NOINST)
 
 CLEANFILES += \
@@ -67,6 +71,7 @@ CLEANFILES += \
 	pkg/playground/cockpit-components-select.js \
 	pkg/playground/cockpit-components-dialog.js \
 	pkg/playground/timer.min.html \
+	pkg/playground/timer.min.js \
 	$(NULL)
 
 EXTRA_DIST += \
