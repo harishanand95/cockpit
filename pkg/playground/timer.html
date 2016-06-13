@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../base1/cockpit.css" type="text/css" rel="stylesheet">
+    <link href="../playground/timer.css" type="text/css" rel="stylesheet">
     <script src="../base1/bundle.js"></script>
     <script src="../playground/timer.js"></script>
     <link rel="stylesheet" type="text/css" href="../base1/patternfly.css">
@@ -72,7 +73,7 @@
               <div class="col-sm-9">
                 <div class="btn-group bootstrap-select dropdown form-control" id="boot_specific">
                   <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                    <span class="pull-left" translatable="yes">After system boot</span>
+                    <span class="pull-left" value="1" translatable="yes">After system boot</span>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
@@ -90,7 +91,7 @@
               <div class="col-sm-6">
                 <div class="btn-group bootstrap-select dropdown form-control" id="drop_time">
                   <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                    <span class="pull-left" translatable="yes">Seconds</span>
+                    <span class="pull-left" value="1" translatable="yes">Seconds</span>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
@@ -107,7 +108,7 @@
               <div class="col-sm-6">
                 <div class="btn-group bootstrap-select dropdown form-control" id="drop_repeat">
                   <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                    <span class="pull-left" translatable="yes">Don't Repeat</span>
+                    <span class="pull-left" value="0" translatable="yes">Don't Repeat</span>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
@@ -115,6 +116,7 @@
                     <li value="1"><a>Repeat Hourly</a></li>
                     <li value="2"><a>Repeat Daily</a></li>
                     <li value="3"><a>Repeat Weekly</a></li>
+                    <li value="4"><a>Repeat Monthly</a></li>
                   </ul>
                 </div>
               </div>
@@ -170,7 +172,7 @@
                 <div class="col-sm-4">
                   <div class="btn-group bootstrap-select dropdown form-control " id="repeat_weekly_day">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                      <span class="pull-left" translatable="yes">Monday</span>
+                      <span class="pull-left" value="1" translatable="yes">Monday</span>
                       <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -190,6 +192,62 @@
                 <div class="col-sm-1">:</div>
                 <div class="col-sm-2 ">
                   <input type="text" id="repeat_weekly_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
+                </div>
+                <div class="col-sm-2 ">
+                  <button class="btn btn-default dropdown-toggle pficon-close " type="button" disabled></button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" id="specific_time_for_repeat_monthly0">
+              <label class="col-sm-3 control-label" >Day : Hour : Minute</label>
+              <div class="col-sm-9" >
+                <div class="col-sm-4">
+                  <div class="btn-group bootstrap-select dropdown form-control " id="repeat_monthly_day">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                      <span class="pull-left" value="1" translatable="yes">1st</span>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu vertical-scroll">
+                      <li value="1"><a>1st</a></li>
+                      <li value="2"><a>2nd</a></li>
+                      <li value="3"><a>3rd</a></li>
+                      <li value="4"><a>4th</a></li>
+                      <li value="5"><a>5th</a></li>
+                      <li value="6"><a>6th</a></li>
+                      <li value="7"><a>7th</a></li>
+                      <li value="8"><a>8th</a></li>
+                      <li value="9"><a>9th</a></li>
+                      <li value="10"><a>10th</a></li>
+                      <li value="11"><a>11th</a></li>
+                      <li value="12"><a>12th</a></li>
+                      <li value="13"><a>13th</a></li>
+                      <li value="14"><a>14th</a></li>
+                      <li value="15"><a>15th</a></li>
+                      <li value="16"><a>16th</a></li>
+                      <li value="17"><a>17th</a></li>
+                      <li value="18"><a>18th</a></li>
+                      <li value="19"><a>19th</a></li>
+                      <li value="20"><a>20th</a></li>
+                      <li value="21"><a>21st</a></li>
+                      <li value="22"><a>22nd</a></li>
+                      <li value="23"><a>23rd</a></li>
+                      <li value="24"><a>24th</a></li>
+                      <li value="25"><a>25th</a></li>
+                      <li value="26"><a>26th</a></li>
+                      <li value="27"><a>27th</a></li>
+                      <li value="28"><a>28th</a></li>
+                      <li value="29"><a>29th</a></li>
+                      <li value="30"><a>30th</a></li>
+                      <li value="31"><a>31st</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" id="repeat_monthly_hr" data-toggle="tooltip" data-placement="bottom" title="hours" value="00" class="form-control" >
+                </div>
+                <div class="col-sm-1">:</div>
+                <div class="col-sm-2 ">
+                  <input type="text" id="repeat_monthly_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
                 </div>
                 <div class="col-sm-2 ">
                   <button class="btn btn-default dropdown-toggle pficon-close " type="button" disabled></button>

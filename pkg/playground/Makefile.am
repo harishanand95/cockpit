@@ -24,6 +24,7 @@ playground_DATA = \
 	pkg/playground/service.js \
 	pkg/playground/timer.html \
 	pkg/playground/timer.js \
+	pkg/playground/timer.css \
 	pkg/playground/plot.html \
 	pkg/playground/plot.min.html \
 	pkg/playground/manifest.json \
@@ -70,7 +71,6 @@ CLEANFILES += \
 	pkg/playground/cockpit-components-listing.js \
 	pkg/playground/cockpit-components-select.js \
 	pkg/playground/cockpit-components-dialog.js \
-	pkg/playground/timer.min.html \
 	pkg/playground/timer.min.js \
 	$(NULL)
 

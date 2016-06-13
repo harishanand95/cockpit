@@ -3,20 +3,24 @@ require([
     "base1/cockpit",
     "base1/mustache",
     "playground/moment",
-    "base1/patterns"
+    "playground/patterns"
 ], function($, cockpit, mustache, moment) {
 
   var repeat_hourly_count = 0;
   var repeat_daily_count = 0;
-  var repeat_weekly_count = 0;    
+  var repeat_weekly_count = 0;
+  var repeat_monthly_count = 0;
+
   var repeat_hourly = $("#specific_time_for_repeat_hourly0");
   var repeat_daily = $("#specific_time_for_repeat_daily0");
   var repeat_weekly = $("#specific_time_for_repeat_weekly0");
+  var repeat_monthly = $("#specific_time_for_repeat_monthly0");
 
+  $("#specific_time_without_repeat").hide();
   $("[id^=specific_time_for_repeat_hourly]").hide();
   $("[id^=specific_time_for_repeat_daily]").hide();
   $("[id^=specific_time_for_repeat_weekly]").hide();
-  $("#specific_time_without_repeat").hide();
+  $("[id^=specific_time_for_repeat_monthly]").hide();
   $("#repeat").hide();
   $("#add_button").hide();
   $("#close_button").hide();
@@ -60,6 +64,20 @@ require([
       $("#repeat").after($self);
       $(".btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
     }
+    else if ( timer_unit.repeat == "Repeat Monthly" ) {
+      repeat_monthly_count++;
+      $self = repeat_monthly.clone();
+      var id_name = "specific_time_for_repeat_monthly"+repeat_monthly_count;
+      var id_name_hr = "repeat_monthly_hr"+repeat_monthly_count;
+      var id_name_min = "repeat_monthly_min"+repeat_monthly_count;
+      var id_name_day = "repeat_monthly_day"+repeat_monthly_count;
+      $self.prop('id',id_name);
+
+      $("#repeat_monthly_hr",$self).prop('id',id_name_hr);
+      $("#repeat_monthly_min",$self).prop('id',id_name_min);
+      $("#repeat").after($self);
+      $(".btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
+    }
   });
 
   $(".form-horizontal").on( "click",".btn.btn-default.dropdown-toggle.pficon-close",function() {
@@ -81,6 +99,12 @@ require([
       repeat_weekly_count--;
       $(this).parents().eq(2).remove();
     }
+    else if( timer_unit.repeat == "Repeat Monthly" ) {
+      if (repeat_monthly_count <=1)
+        $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
+      repeat_monthly_count--;
+      $(this).parents().eq(2).remove();
+    }
   });
 
   $("#target").on("click","#create-timer", function() {
@@ -96,6 +120,7 @@ require([
   $(".form-horizontal ").on("click", "[value]",".btn-group.bootstrap-select.dropdown.form-control", function(ev) {
       var target = $(this).closest(".btn-group.bootstrap-select.dropdown.form-control");
       $("span", target).first().text(ev.target.text);
+      $("span", target).first().attr("value",ev.currentTarget.value);
 
       switch(target.attr('id')) {
         case "boot_specific" : set_calendar_or_boot(Number(ev.currentTarget.value));
@@ -112,21 +137,21 @@ require([
       $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").trigger('click');
     }
     switch(val) {
-      case 0 : 
-        $("#specific_time_without_repeat").show();
+      case 0 : $("#specific_time_without_repeat").show();
         $("[id^=specific_time_for_repeat_hourly]").hide();
         $("[id^=specific_time_for_repeat_daily]").hide();
         $("[id^=specific_time_for_repeat_weekly]").hide();
+        $("[id^=specific_time_for_repeat_monthly]").hide();
         $("#add_button").hide();
         $("#close_button").hide();
         timer_unit.repeat = "Don't Repeat";
         break;
 
-      case 1 : 
-        $("#specific_time_without_repeat").hide();
+      case 1 : $("#specific_time_without_repeat").hide();
         $("[id^=specific_time_for_repeat_hourly]").show();
-        $("[id^=specific_time_for_repeat_daily]").hide(); 
+        $("[id^=specific_time_for_repeat_daily]").hide();
         $("[id^=specific_time_for_repeat_weekly]").hide();
+        $("[id^=specific_time_for_repeat_monthly]").hide();
         $("#add_button").show();
         $("#close_button").show();
 
@@ -137,11 +162,11 @@ require([
         timer_unit.repeat = "Repeat Hourly";
         break;
 
-      case 2 : 
-        $("#specific_time_without_repeat").hide();
-        $("[id^=specific_time_for_repeat_hourly]").hide(); 
+      case 2 : $("#specific_time_without_repeat").hide();
+        $("[id^=specific_time_for_repeat_hourly]").hide();
         $("[id^=specific_time_for_repeat_daily]").show();
         $("[id^=specific_time_for_repeat_weekly]").hide();
+        $("[id^=specific_time_for_repeat_monthly]").hide();
         $("#add_button").show();
         $("#close_button").show();
 
@@ -152,11 +177,11 @@ require([
         timer_unit.repeat = "Repeat Daily";
         break;
 
-      case 3 : 
-        $("#specific_time_without_repeat").hide();
+      case 3 : $("#specific_time_without_repeat").hide();
         $("[id^=specific_time_for_repeat_hourly]").hide(); 
         $("[id^=specific_time_for_repeat_daily]").hide();
         $("[id^=specific_time_for_repeat_weekly]").show();
+        $("[id^=specific_time_for_repeat_monthly]").hide();
         $("#add_button").show();
         $("#close_button").show();
         if ( repeat_weekly_count >= 1)
@@ -165,6 +190,19 @@ require([
           $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
         timer_unit.repeat = "Repeat Weekly";
         break;
+      case 4 : $("#specific_time_without_repeat").hide();
+        $("[id^=specific_time_for_repeat_hourly]").hide(); 
+        $("[id^=specific_time_for_repeat_daily]").hide();
+        $("[id^=specific_time_for_repeat_weekly]").hide();
+        $("[id^=specific_time_for_repeat_monthly]").show();
+        $("#add_button").show();
+        $("#close_button").show();
+        if ( repeat_monthly_count >= 1)
+          $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',false);
+        else
+          $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
+        timer_unit.repeat = "Repeat Monthly";
+        break;
     };
   }
 
@@ -172,9 +210,11 @@ require([
     if (value == 1) {
       $("#boot").show();
       $("#repeat").hide();
+      $("#specific_time_without_repeat").hide();
       $("[id^=specific_time_for_repeat_hourly]").hide();
       $("[id^=specific_time_for_repeat_daily]").hide();
       $("[id^=specific_time_for_repeat_weekly]").hide();
+      $("[id^=specific_time_for_repeat_monthly]").hide()
       timer_unit.Calendar_or_Boot = "Boot";
     }
     else if (value == 2) {
@@ -188,6 +228,8 @@ require([
         toggle_on_repeat(2);
       else if (timer_unit.repeat == "Repeat Weekly")
         toggle_on_repeat(3);
+      else if (timer_unit.repeat == "Repeat Monthly")
+        toggle_on_repeat(4);
       timer_unit.Calendar_or_Boot = "Calendar";
     }
   }
@@ -226,11 +268,13 @@ require([
       timer_unit.name = null;
       ex1 = new Error("This field cannot be empty.");
       ex1.target = "#filename";
+      ar.push(ex1);
     }
     else if ( !str ) {
       timer_unit.name = null;
       ex1 = new Error("This field is invalid.");
       ex1.target = "#filename";
+      ar.push(ex1);
     }
     str = null;
 
@@ -239,11 +283,13 @@ require([
       timer_unit.Description = null;
       ex2 = new Error("This field cannot be empty.");
       ex2.target = "#description";
+      ar.push(ex2);
     }
     else if ( !str.trim() ) {
       timer_unit.Description = null;
       ex2 = new Error("This field is invalid.");
       ex2.target = "#description";
+      ar.push(ex2);
     }
     str = null;
     
@@ -252,11 +298,13 @@ require([
       timer_unit.Command = null;
       ex3 = new Error("This field cannot be empty.");
       ex3.target = "#command";
+      ar.push(ex3);
     }
     else if ( !str.trim() ) {
       timer_unit.Command = null;
       ex3 = new Error("This field is invalid.");
       ex3.target = "#command";
+      ar.push(ex3);
     }
     str = null;
 
@@ -266,6 +314,7 @@ require([
         timer_unit.boot_time = null;
         ex4 = new Error("This field needs an integer value");
         ex4.target = "#boot_time";
+        ar.push(ex4);
       }
     }
     else {
@@ -276,11 +325,12 @@ require([
         if (hr >= 24 || hr < 0 || isNaN(hr)) {
           ex6 = new Error("within 0-23");
           ex6.target = "#hr";
+          ar.push(ex6);
         }
-
         if (min >= 60 || min < 0 || isNaN(min)) {
           ex7 = new Error("within 0-59");
           ex7.target = "#min";
+          ar.push(ex7);
         }
       }
       if (timer_unit.repeat == "Repeat Hourly") {
@@ -325,13 +375,25 @@ require([
           }
         });
       }
+      else if(timer_unit.repeat == "Repeat Monthly") {
+        $('input[id^="repeat_monthly_min"]').each( function(count) {
+          if ($(this).val() >= 60 || $(this).val() < 0 || isNaN($(this).val())) {
+            ex5[count] = new Error("within 0-59");
+            ex5[count].target = "#" + $(this).prop('id');
+            ar.push(ex5[count]);
+          }
+        });
+        $('input[id^="repeat_monthly_hr"]').each( function(count) {
+          if ($(this).val() >= 24 || $(this).val() < 0 || isNaN($(this).val())) {
+            ex5[count] = new Error("within 0-23");
+            ex5[count].target = "#" + $(this).prop('id');
+            ar.push(ex5[count]);
+          }
+        });
+      }
     }
-    ar.push(ex1);
-    ar.push(ex2);
-    ar.push(ex3);
-    ar.push(ex4);
-    ar.push(ex6);
-    ar.push(ex7);
+    if ( ar.length == 0 )
+      return true;
     $("div#modal").dialog("failure", ar);
     return false;
   }
@@ -357,7 +419,7 @@ require([
     var array = [];
     if (timer_unit.repeat == "Repeat Hourly") {
       $('input[id^="repeat_hourly_min"]').each( function() {
-        array.push($(this).val());
+        array.push(parseInt($(this).val())); //parseInt used to avoid cases like "23 " or " 23"
       });
       timer_unit.repeat_minute = array.toString();
       timer_unit.repeat_hour = "*";
@@ -367,13 +429,13 @@ require([
     }
     else if(timer_unit.repeat == "Repeat Daily") {
       $('input[id^="repeat_daily_min"]').each( function() {
-        array.push($(this).val());
+        array.push(parseInt($(this).val()));
       });
       timer_unit.repeat_minute = array.toString();
 
       array = [];
       $('input[id^="repeat_daily_hr"]').each( function() {
-        array.push($(this).val());
+        array.push(parseInt($(this).val()));
       });
       timer_unit.repeat_hour = array.toString();
 
@@ -382,13 +444,13 @@ require([
     }
     else if(timer_unit.repeat == "Repeat Weekly") {
       $('input[id^="repeat_weekly_min"]').each( function() {
-        array.push($(this).val());
+        array.push(parseInt($(this).val()));
       });
       timer_unit.repeat_minute = array.toString();
 
       array = [];
       $('input[id^="repeat_weekly_hr"]').each( function() {
-        array.push($(this).val());
+        array.push(parseInt($(this).val()));
       });
       timer_unit.repeat_hour = array.toString();
 
@@ -399,6 +461,27 @@ require([
       timer_unit.repeat_days = array.toString();
 
       timer_unit.OnCalendar = timer_unit.repeat_days + "*-*-* "+timer_unit.repeat_hour+":"+timer_unit.repeat_minute+":00";
+    }
+    else if(timer_unit.repeat == "Repeat Monthly") {
+      console.log("Repeat Monthly");
+      $('input[id^="repeat_monthly_min"]').each( function() {
+        array.push(parseInt($(this).val()));
+      });
+      timer_unit.repeat_minute = array.toString();
+
+      array = [];
+      $('input[id^="repeat_monthly_hr"]').each( function() {
+        array.push(parseInt($(this).val()));
+      });
+      timer_unit.repeat_hour = array.toString();
+
+      array = [];
+      $('div[id^="repeat_monthly_day"]').each( function() {
+        array.push($("span", $(this)).first().attr("value"));
+      });
+      timer_unit.repeat_days = array.toString();
+
+      timer_unit.OnCalendar = "*-*-"+timer_unit.repeat_days+" "+timer_unit.repeat_hour+":"+timer_unit.repeat_minute+":00";
     }
     console.log(timer_unit);
     create_timer_file();
@@ -436,7 +519,6 @@ require([
     });
     console.log("#Timer file#\n"+timer_file);
   }
-
 
   units_by_path = { };
 
