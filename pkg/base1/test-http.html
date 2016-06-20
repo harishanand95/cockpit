@@ -66,8 +66,13 @@ asyncTest("simple request", function() {
                     },
                     'react-patterns': {
                         label: "React Patterns"
+                    },
+                    "timer": {
+                        "label": "Timer Playground",
+                        "path": "timer.html"
                     }
-                }
+                },
+                "content-security-policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval'"
             }, "returned right data");
         })
         .always(function() {
