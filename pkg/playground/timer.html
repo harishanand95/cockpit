@@ -2,48 +2,58 @@
     <title>Timer</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../base1/cockpit.css" type="text/css" rel="stylesheet">
+    <link href="../base1/cockpit.css" type="text/css" rel="stylesheet"> 
+    <link href="../system/journal.css" type="text/css" rel="stylesheet">
     <link href="../playground/timer.css" type="text/css" rel="stylesheet">
-    <script src="../base1/bundle.js"></script>
-    <script src="../playground/timer.js"></script>
     <link rel="stylesheet" type="text/css" href="../base1/patternfly.css">
     <link rel="stylesheet" type="text/css" href="../base1/patternfly-additions.css">
+    <script src="../base1/bundle.js"></script>
+    <script src="../playground/timer.js"></script>
 </head>
 <body>
-  <br>
+  <div class="content-header-extra">
+    <p class="btn btn-default" data-pattern="\.timer$" translatable="yes">Timers</p>
+    <button id="create-timer" data-target="#test-dialog" data-toggle="modal" data-target="#modal" class="btn btn-primary pull-right">Create Timer</button> 
+  </div>
+  <br><br><br>
   <div class="container-fluid">
     <div id="target">
-      <div class="spinner"></div>
+      <div id="services-list-enabled"></div>
+      <div id="services-list-disabled"></div>
+      <div id="services-list-static"></div>
     </div>
   </div>
+
+  <!--  TIMER HTML -->
+
   <script id="services-units-tmpl" type="x-template/mustache">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span class="pull-right">
-            <button id="create-timer" data-target="#test-dialog" data-toggle="modal" data-target="#modal" class="btn btn-primary fa fa-plus"></button>
-          </span>
           <span translatable="yes"><b>{{heading}}</b></span>
         </div>
-        <table class="table table-hover panel-body">
+        <table class="table table-hover">
+        <thead>
           <tr>
-            <td><h4><b>Description</b></h4></td>
-            <td><h4><b>Id</b></h4></td>
-            <td><h4><b>Next run</b></h4></td>
-            <td><h4><b>Last run</b></h4></td>
-            <td><h4><b>State</b></h4></td>
+            <th>Description</th>
+            <th>Id</th>
+            <th>Next run</th>
+            <th>Last run</th>
+            <th>State</th>
           </tr>
+        </thead>
           {{ #units }}
           <tr data-goto-unit="{{Id}}">
-            <td class="service-unit-description">{{Description}}</td>
+            <td >{{Description}}</td>
             <td>{{Id}}</td>
-            <td>{{next_run}}</td>
-            <td>{{last_run}}</td>
+            <td>{{NextRunTime}}</td>
+            <td>{{LastTriggerTime}}</td>
             <td>{{ActiveState}} ({{SubState}})</td>
           </tr>
           {{ /units }}
         </table>
     </div>
   </script>
+
   <div class="modal" id="modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="Labelmodal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -65,7 +75,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label" for="command">Command</label>
               <div class="col-sm-9">
-                <input type="text" data-toggle="tooltip" data-placement="bottom" title="example : /usr/bin/sh -c '/usr/bin/date >> /tmp/date'" id="command" class="form-control">
+                <input type="text" data-placement="bottom" id="command" class="form-control">
               </div>
             </div>
             <div class="form-group">
@@ -103,7 +113,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group" id="repeat">
+            <div class="form-group" id="repeat" hidden>
               <div class="col-sm-3"></div>
               <div class="col-sm-6">
                 <div class="btn-group bootstrap-select dropdown form-control" id="drop_repeat">
@@ -117,14 +127,15 @@
                     <li value="2"><a>Repeat Daily</a></li>
                     <li value="3"><a>Repeat Weekly</a></li>
                     <li value="4"><a>Repeat Monthly</a></li>
+                    <li value="5"><a>Repeat Yearly</a></li>
                   </ul>
                 </div>
               </div>
               <div class="col-sm-1">
-                <button class="btn btn-default dropdown-toggle fa fa-plus" id="add_button" type="button"></button>
+                <button class="btn btn-default dropdown-toggle fa fa-plus" id="add_button" type="button" hidden></button>
               </div>
             </div>
-            <div class="form-group" id="specific_time_without_repeat" >
+            <div class="form-group" id="specific_time_without_repeat" hidden>
               <label class="col-sm-3 control-label" >Hour : Minute</label>
               <div class="col-sm-9" >
                 <div class="col-sm-2">
@@ -136,7 +147,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group" id="specific_time_for_repeat_hourly0" >
+            <div class="form-group" id="specific_time_for_repeat_hourly0" hidden>
               <label class="col-sm-3 control-label" >Hour : Minute</label>
               <div class="col-sm-9" >
                 <div class="col-sm-2">
@@ -151,7 +162,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group" id="specific_time_for_repeat_daily0">
+            <div class="form-group" id="specific_time_for_repeat_daily0" hidden>
               <label class="col-sm-3 control-label" >Hour : Minute</label>
               <div class="col-sm-9" >
                 <div class="col-sm-2">
@@ -166,7 +177,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group" id="specific_time_for_repeat_weekly0">
+            <div class="form-group" id="specific_time_for_repeat_weekly0" hidden>
               <label class="col-sm-3 control-label" >Day : Hour : Minute</label>
               <div class="col-sm-9" >
                 <div class="col-sm-4">
@@ -198,7 +209,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group" id="specific_time_for_repeat_monthly0">
+            <div class="form-group" id="specific_time_for_repeat_monthly0" hidden>
               <label class="col-sm-3 control-label" >Day : Hour : Minute</label>
               <div class="col-sm-9" >
                 <div class="col-sm-4">
@@ -248,6 +259,27 @@
                 <div class="col-sm-1">:</div>
                 <div class="col-sm-2 ">
                   <input type="text" id="repeat_monthly_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
+                </div>
+                <div class="col-sm-2 ">
+                  <button class="btn btn-default dropdown-toggle pficon-close " type="button" disabled></button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" id="specific_time_for_repeat_yearly0" hidden>
+              <label class="col-sm-3 control-label" >Date : Hour : Minute</label>
+              <div class="col-sm-9" >
+                <div class="pull-left col-sm-4">
+                  <div class="input-group date datepicker" id="repeat_yearly_day">
+                    <input type="text"  class="form-control" />
+                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" id="repeat_yearly_hr" data-toggle="tooltip" data-placement="bottom" title="hours" value="00" class="form-control" >
+                </div>
+                <div class="col-sm-1">:</div>
+                <div class="col-sm-2 ">
+                  <input type="text" id="repeat_yearly_min" value="00" data-toggle="tooltip" data-placement="bottom" title="minutes" class="form-control">
                 </div>
                 <div class="col-sm-2 ">
                   <button class="btn btn-default dropdown-toggle pficon-close " type="button" disabled></button>
