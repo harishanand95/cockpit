@@ -166,8 +166,8 @@ require([
                 $("#close_button").hide();
                 timer_unit.repeat = "Don't Repeat";
                 break;
-
-            case 1 : $("#specific_time_without_repeat").hide();
+            // 60 min
+            case 60 : $("#specific_time_without_repeat").hide();
                 $("[id^=specific_time_for_repeat_hourly]").show();
                 $("[id^=specific_time_for_repeat_daily]").hide();
                 $("[id^=specific_time_for_repeat_weekly]").hide();
@@ -182,8 +182,8 @@ require([
                     $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
                 timer_unit.repeat = "Repeat Hourly";
                 break;
-
-            case 2 : $("#specific_time_without_repeat").hide();
+            // 60*24 min
+            case 1440 : $("#specific_time_without_repeat").hide();
                 $("[id^=specific_time_for_repeat_hourly]").hide();
                 $("[id^=specific_time_for_repeat_daily]").show();
                 $("[id^=specific_time_for_repeat_weekly]").hide();
@@ -198,8 +198,8 @@ require([
                     $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
                 timer_unit.repeat = "Repeat Daily";
                 break;
-
-            case 3 : $("#specific_time_without_repeat").hide();
+            // 60*24*7 min
+            case 10080 : $("#specific_time_without_repeat").hide();
                 $("[id^=specific_time_for_repeat_hourly]").hide();
                 $("[id^=specific_time_for_repeat_daily]").hide();
                 $("[id^=specific_time_for_repeat_weekly]").show();
@@ -213,8 +213,8 @@ require([
                     $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
                 timer_unit.repeat = "Repeat Weekly";
                 break;
-
-            case 4 : $("#specific_time_without_repeat").hide();
+            // 60*24*31 min 
+            case 44640 : $("#specific_time_without_repeat").hide();
                 $("[id^=specific_time_for_repeat_hourly]").hide();
                 $("[id^=specific_time_for_repeat_daily]").hide();
                 $("[id^=specific_time_for_repeat_weekly]").hide();
@@ -228,8 +228,8 @@ require([
                     $(".form-horizontal .btn.btn-default.dropdown-toggle.pficon-close").prop('disabled',true);
                 timer_unit.repeat = "Repeat Monthly";
                 break;
-
-            case 5 : $("#specific_time_without_repeat").hide();
+            // 60*24*365 min 
+            case 525600 : $("#specific_time_without_repeat").hide();
                 $("[id^=specific_time_for_repeat_hourly]").hide();
                 $("[id^=specific_time_for_repeat_daily]").hide();
                 $("[id^=specific_time_for_repeat_weekly]").hide();
@@ -279,13 +279,13 @@ require([
     var set_boottime_unit = function(value) {
         value = Number(value);
         switch (value) {
-            case 1 : timer_unit.time_unit = "sec";
+            case 1 : timer_unit.time_unit = "sec"; 
                 break;
-            case 2 : timer_unit.time_unit = "min";
+            case 60 : timer_unit.time_unit = "min"; //60sec
                 break;
-            case 3 : timer_unit.time_unit = "hr";
+            case 3600 : timer_unit.time_unit = "hr"; //60*60sec
                 break;
-            case 4 : timer_unit.time_unit = "week";
+            case 604800 : timer_unit.time_unit = "week";//7*24*60*60sec
                 break;
         }
     }
